@@ -1,44 +1,31 @@
-import {expect} from 'chai';
-import 'mocha';
-import {connect} from 'net';
-import {EventEmitter} from 'events';
-import {MessageEventEmitterClient} from '../src/eventEmitterClient.js';
+import { expect } from "chai";
+import { addCardToCollection, deleteCardToCollection } from "../src/index.js";
 
-describe('MessageEventEmitterClient', () => {
-  it('Should emit a message event once it gets a complete message', (done) => {
-    const socket = new EventEmitter();
-    const client = new MessageEventEmitterClient(socket);
 
-    client.on('message', (message) => {
-      expect(message).to.be.eql({ 'type': 'command', 'content': 'ls' });
-      expect(message).to.be.eql({ 'type': message.type, 'content': message.content });
-      expect(message.type).to.be.equal('command');
-      expect(message.content).to.be.equal('ls');
-      done();
+describe("Asynchronous function weatherInfo tests", () => {
+  it ("deleteCardToCollection should delete a card", (done) => {
+    deleteCardToCollection("edusegre", { id: 1, name: "Black Lotus" }, (error) => {
+      if (!error) {
+        expect(error).to.be.equal(undefined);
+        done();
+      }
     });
-
-    socket.emit('data', '{"type": "command" ');
-    socket.emit('data', ', "content": "ls"}');
-    socket.emit('data', '\n');
   });
-});
-
-describe('MessageEventEmitterClient', () => {
-  it('Deberia el cliente devolver el json', (done) => {
-    const socket = new EventEmitter();
-    
-    const client = new MessageEventEmitterClient(socket);
-
-    client.on('message', (message) => {
-      expect(message).to.be.eql({ 'type': 'respuesta', 'content': 'ls -la' }); 
-      expect(message).to.be.eql({ 'type': message.type, 'content': message.content });
-      expect(message.type).to.be.equal('respuesta');
-      expect(message.content).to.be.equal('ls -la');
-      done();
+  it("weatherInfo should get weather information", (done) => {
+    addCardToCollection("edusegre", { id: 1, name: "Black Lotus" }, (error) => {
+      if (!error) {
+        expect(error).to.be.equal(undefined);
+        done();
+      }
     });
+  });
+  it("weatherInfo should provide an error", (done) => {
 
-    socket.emit('data', '{"type": "respuesta" ');
-    socket.emit('data', ', "content": "ls -la"}');
-    socket.emit('data', '\n');
+    addCardToCollection("edusegre", { id: 1, name: "Black Lotus" }, (error) => {
+      if (error) {
+        expect(error.message).to.be.equal("La carta ya existe en la colección.");
+        done();
+      }
+    });
   });
 });
