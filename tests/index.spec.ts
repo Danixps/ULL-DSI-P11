@@ -3,8 +3,8 @@ import { addCardToCollection, deleteCardToCollection, Card, Color, LineType, Rar
 
 
 
-describe("deleteCardToCollection debería eliminar una carta con éxito", () => {
-  it ("deleteCardToCollection should delete a card", (done) => {
+describe("Conjuntos de pruebas para manipulacion de cartas magic", () => {
+  it ("deleteCardToCollection deberia delete a card", (done) => {
     deleteCardToCollection("edusegre",  new Card(777, 'Black Lotus', 69, Color.Black, LineType.Tierra, Rarity.Rare, 'Tap to delete the enemy creature.', 100 ), (error, data) => {
       if (!error) {
         expect(error).to.be.equal(undefined);
@@ -27,7 +27,7 @@ describe("deleteCardToCollection debería eliminar una carta con éxito", () => 
     addCardToCollection("edusegre",  new Card(777, 'Black Lotus', 69, Color.Black, LineType.Tierra, Rarity.Rare, 'Tap to delete the enemy creature.', 100 ), (error, data) => {
       if (error) {
         expect(error.message).to.be.equal("La carta ya existe en la colección.");
-        expect(data).to.be.equal("_");
+        expect(data).to.be.equal(undefined);
         done();
       }
     });
@@ -54,7 +54,7 @@ describe("deleteCardToCollection debería eliminar una carta con éxito", () => 
     modifyCardToCollection("edusegre",  new Card(9, 'Black Lotus', 69, Color.Black, LineType.Tierra, Rarity.Rare, 'Tap to delete the enemy creature.', 100 ), (error, data) => {
       if (error) {
         expect(error).to.be.eql(new Error('La carta no existe en la colección de edusegre.'));
-        expect(data).to.be.eql('_');
+        expect(data).to.be.eql(undefined);
         done();
       }
     });

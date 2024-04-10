@@ -1,5 +1,9 @@
 import fs from 'fs';
 
+
+/**
+ * Descripcion: Enumerado de rarezas de cartas
+ */
 export enum Rarity {
     Common = 'común',
     Uncommon = 'infrecuente',
@@ -20,6 +24,9 @@ export enum Color {
     Multicolor = 'multicolor'
 }
 
+/**
+ * Descripcion: Enumerado de linea de tipos
+ */
 export enum LineType {
     Tierra = 'tierra',
     Criatura = 'criatura',
@@ -45,7 +52,7 @@ export interface Card_Characteristics {
 }
 
 /**
- * Descripción: La
+ * Descripción: Clase carta que implementas las caracteristicas de una carta
  */
 export class Card implements Card_Characteristics {
     id: number;
@@ -87,7 +94,7 @@ export class Card implements Card_Characteristics {
 }
 type Data = string;
 
-
+//ADDCARD
 /**
  * Descripcion: Añade la carta de la collection de forma asyncrona
  * @param user usuario propietario de la carta
@@ -98,22 +105,22 @@ export const addCardToCollection = (user: string, card: Card, callback:( err: Er
     const filePath = `./collections/${user}/${card.id}.json`;
     fs.access(filePath, fs.constants.F_OK, (err) => {
         if (!err) {
-            // La carta ya existe, emitir un mensaje de error
-            callback(new Error("La carta ya existe en la colección."), '_');
+            // la carta ya existe, emitir un mensaje de error
+            callback(new Error("La carta ya existe en la colección."), undefined);
         } else {
-            // La carta no existe, proceder a escribir el archivo JSON
+            // la carta no existe, proceder a escribir el archivo JSON
             fs.writeFile(filePath, JSON.stringify(card), (err) => {
                 if (err) {
-                    callback(err, '_'); // Error al escribir el archivo
+                    callback(err, undefined); // Error al escribir el archivo
                 } else {
-                    callback(undefined, 'Éxito al cargar la carta'); // Éxito al añadir la carta
+                    callback(undefined, 'Éxito al cargar la carta'); // éxito al añadir la carta
                 }
             });
         }
     });
 }
-//DELETE CARD
 
+//DELETE CARD
 /**
  * Descripcion: Elimia la carta de la collection de forma asyncrona
  * @param user usuario propietario de la carta
@@ -128,18 +135,20 @@ export const deleteCardToCollection = (user: string, card: Card, callback:( err:
             // si la carta ya existe a elimina el archivo
             fs.unlink(filePath, (err) => {
                 if (err) {
-                    callback(err, '_'); // error al eliminar el archivo
+                    callback(err, undefined); // error al eliminar el archivo
                 } else {
                     callback(undefined, 'Éxito al eliminar la carta'); // éxito al eliminar la carta
                 }
             });
         // si la carta no existe, emitir un mensaje de error
         } else {
-            callback(new Error("La carta no existe en la colección."), '_');
+            callback(new Error("La carta no existe en la colección."), undefined);
         }
     });
 }
 
+
+//MODIFY CARD
 /**
  * Descripcion: Modifica la carta de la collection de forma asyncrona
  * @param user usuario propietario de la carta
@@ -154,20 +163,20 @@ export const modifyCardToCollection = (user: string, card: Card, callback:( err:
             fs.writeFile(filePath, (JSON.stringify(card)), (err) => {
                 //si hay error de escritura en el archivo, notificarlo
                 if (err) {
-                    callback(err, '_'); // error al eliminar el archivo
+                    callback(err, undefined); // error al eliminar el archivo
                 } else {
                     callback(undefined, 'Éxito al modificar la carta de ' + user ); // éxito al eliminar la carta
                 } 
             });
         } else {
             // en cambio si el archivo no se puede accedera, emitir un mensaje de error
-            callback(new Error("La carta no existe en la colección de " + user + "."), '_');
+            callback(new Error("La carta no existe en la colección de " + user + "."), undefined);
         }
     });
 }
 
 
-// Uso de la función addCardToCollection con un callback
+// uso de la función addCardToCollection
 deleteCardToCollection("edusegre", new Card(777, 'Black Lotus', 69, Color.Black, LineType.Tierra, Rarity.Rare, 'Tap to delete the enemy creature.', 100 ), (error) => {
     if (error) {
         console.error("Error:", error.message);
@@ -176,7 +185,7 @@ deleteCardToCollection("edusegre", new Card(777, 'Black Lotus', 69, Color.Black,
     }
 });
 
-// Uso de la función deleteCardToCollection con un callback
+// uso de la función deleteCardToCollection
 addCardToCollection("edusegre", new Card(777, 'Black Lotus', 69, Color.Black, LineType.Tierra, Rarity.Rare, 'Tap to delete the enemy creature.', 100 ), (error) => {
     if (error) {
         console.error("Error:", error.message);
