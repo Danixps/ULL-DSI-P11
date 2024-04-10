@@ -115,7 +115,7 @@ export const addCardToCollection = (user: string, card: Card, callback:( err: Er
 
 /**
  * Descripcion: Elimia la carta de la collection de forma asyncrona
- * @param mensaje Es el mensaje recibido del servidor
+ * @param user usuario propietario de
  */
 export const deleteCardToCollection = (user: string, card: Card, callback:( err: Error | undefined, data: Data | undefined) => void) => {
     const filePath = `./collections/${user}/${card.id}.json`;
@@ -135,6 +135,39 @@ export const deleteCardToCollection = (user: string, card: Card, callback:( err:
         }
     });
 }
+export const modifyCardToCollection = (user: string, card: Card, callback:( err: Error | undefined, data: Data | undefined) => void) => {
+    const filePath = `./collections/${user}/${card.id}.json`;
+    fs.access(filePath, fs.constants.F_OK, (err) => {
+        if (!err) {
+            // La carta ya existe, proceder a eliminar el archivo JSON
+            fs.writeFile(filePath, (JSON.stringify(card)), (err) => {
+                if (err) {
+                    callback(err, '_'); // Error al eliminar el archivo
+                } else {
+                    callback(undefined, 'Éxito al modificar la carta de ' + user ); // Éxito al eliminar la carta
+                } 
+            });
+        } else {
+            // La carta no existe, emitir un mensaje de error
+            callback(new Error("La carta no existe en la colección de " + user + "."), '_');
+        }
+    });
+}
+
+// public modificarCarta(usuario: string) {
+//     const directorioUsuario = `./${usuario}`;
+//     const rutaArchivoid = `${directorioUsuario}/${this.id}.json`;
+//     if (!fs.existsSync(rutaArchivoid)) {
+//         console.error(chalk.red(`Card not found at ${usuario} collection`));
+//         const result = `Card not found at ${usuario} collection`;
+//         return result;
+//     } 
+//     const rutaArchivo = `${directorioUsuario}/${this.id}.json`;
+//     fs.writeFileSync(rutaArchivo, JSON.stringify(this, null, 2));
+//     console.log(chalk.green(`Card updated at ${usuario} collection!`));
+//     const result = `Card updated at ${usuario} collection!`;
+//     return result;
+// }
 
 
 // Uso de la función addCardToCollection con un callback
