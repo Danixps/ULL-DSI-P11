@@ -88,10 +88,11 @@ export class Card implements Card_Characteristics {
 type Data = string;
 
 
-// Función para añadir una carta a la colección
 /**
- * Descripcion: cuando se ejecute un evento mensaje en el cliente analizara los parametros del mensaje recibido
- * @param mensaje Es el mensaje recibido del servidor
+ * Descripcion: Añade la carta de la collection de forma asyncrona
+ * @param user usuario propietario de la carta
+ * @param card carta a manipular
+ * @callback manejador donde tengo como argumento data y error donde los ire manipulando dependiendo de la situacion
  */
 export const addCardToCollection = (user: string, card: Card, callback:( err: Error | undefined, data: Data | undefined) => void) => {
     const filePath = `./collections/${user}/${card.id}.json`;
@@ -115,59 +116,55 @@ export const addCardToCollection = (user: string, card: Card, callback:( err: Er
 
 /**
  * Descripcion: Elimia la carta de la collection de forma asyncrona
- * @param user usuario propietario de
+ * @param user usuario propietario de la carta
+ * @param card carta a manipular
+ * @callback manejador donde tengo como argumento data y error donde los ire manipulando dependiendo de la situacion
  */
 export const deleteCardToCollection = (user: string, card: Card, callback:( err: Error | undefined, data: Data | undefined) => void) => {
     const filePath = `./collections/${user}/${card.id}.json`;
+    //compruebo si puedo acceder al archivo 
     fs.access(filePath, fs.constants.F_OK, (err) => {
         if (!err) {
-            // La carta ya existe, proceder a eliminar el archivo JSON
+            // si la carta ya existe a elimina el archivo
             fs.unlink(filePath, (err) => {
                 if (err) {
-                    callback(err, '_'); // Error al eliminar el archivo
+                    callback(err, '_'); // error al eliminar el archivo
                 } else {
-                    callback(undefined, 'Éxito al eliminar la carta'); // Éxito al eliminar la carta
+                    callback(undefined, 'Éxito al eliminar la carta'); // éxito al eliminar la carta
                 }
             });
+        // si la carta no existe, emitir un mensaje de error
         } else {
-            // La carta no existe, emitir un mensaje de error
             callback(new Error("La carta no existe en la colección."), '_');
         }
     });
 }
+
+/**
+ * Descripcion: Modifica la carta de la collection de forma asyncrona
+ * @param user usuario propietario de la carta
+ * @param card carta a manipular
+ * @callback manejador donde tengo como argumento data y error donde los ire manipulando dependiendo de la situacion
+ */
 export const modifyCardToCollection = (user: string, card: Card, callback:( err: Error | undefined, data: Data | undefined) => void) => {
     const filePath = `./collections/${user}/${card.id}.json`;
     fs.access(filePath, fs.constants.F_OK, (err) => {
         if (!err) {
-            // La carta ya existe, proceder a eliminar el archivo JSON
+            // si en el json de la carta se puede escribir 
             fs.writeFile(filePath, (JSON.stringify(card)), (err) => {
+                //si hay error de escritura en el archivo, notificarlo
                 if (err) {
-                    callback(err, '_'); // Error al eliminar el archivo
+                    callback(err, '_'); // error al eliminar el archivo
                 } else {
-                    callback(undefined, 'Éxito al modificar la carta de ' + user ); // Éxito al eliminar la carta
+                    callback(undefined, 'Éxito al modificar la carta de ' + user ); // éxito al eliminar la carta
                 } 
             });
         } else {
-            // La carta no existe, emitir un mensaje de error
+            // en cambio si el archivo no se puede accedera, emitir un mensaje de error
             callback(new Error("La carta no existe en la colección de " + user + "."), '_');
         }
     });
 }
-
-// public modificarCarta(usuario: string) {
-//     const directorioUsuario = `./${usuario}`;
-//     const rutaArchivoid = `${directorioUsuario}/${this.id}.json`;
-//     if (!fs.existsSync(rutaArchivoid)) {
-//         console.error(chalk.red(`Card not found at ${usuario} collection`));
-//         const result = `Card not found at ${usuario} collection`;
-//         return result;
-//     } 
-//     const rutaArchivo = `${directorioUsuario}/${this.id}.json`;
-//     fs.writeFileSync(rutaArchivo, JSON.stringify(this, null, 2));
-//     console.log(chalk.green(`Card updated at ${usuario} collection!`));
-//     const result = `Card updated at ${usuario} collection!`;
-//     return result;
-// }
 
 
 // Uso de la función addCardToCollection con un callback
